@@ -26,6 +26,12 @@ def main():
     "generate personalized tax letters \nand envelopes for each donor.")
     print ("You can also use this program to create a single letter and envelope. \n")
 
+    askDate = input("Please enter a date for your Tax Letter in [Month] [Day], [Year] format, or press enter to use today's date: ")
+    if askDate == None:
+        useDate = formattedDate
+    elif askDate != None:
+        useDate = askDate
+
     #Ask the user if they want to use a CSV file or create a single letter/envelope
     useCSV = input("Would you like to use a CSV file to generate multiple letters and envelopes? (yes/no): ").strip().lower()
     if useCSV == 'yes':
@@ -74,12 +80,12 @@ def main():
         donorCityState = input("Please enter the donor's city and state: ")            
         donorZip = input("Please enter the donor's zip code: ")
         donorAmount = input("Please enter the donation amount (Include dollar sign $): ")
-        createTaxLettersFromCSV(hostPath, newPath, donorFirstName, donorLastName, donorAddress, donorCityState, donorZip, donorAmount)
-        createEnvelopesFromCSV(hostPath, newPath, donorFirstName, donorLastName, donorAddress, donorCityState, donorZip)
+        createTaxLettersFromCSV(hostPath, newPath, useDate, donorFirstName, donorLastName, donorAddress, donorCityState, donorZip, donorAmount)
+        createEnvelopesFromCSV(hostPath, newPath, useDate, donorFirstName, donorLastName, donorAddress, donorCityState, donorZip)
 
 
 #Ceate tax letters for each donor in the CSV file
-def createTaxLettersFromCSV(hostPath, newPath, donorFirstName, donorLastName, donorAddress, donorCityState, donorZip, donorAmount):
+def createTaxLettersFromCSV(hostPath, newPath, useDate, donorFirstName, donorLastName, donorAddress, donorCityState, donorZip, donorAmount):
 
         #Create a new document for each donor based on the template
         print("We are currently in " + os.getcwd())
@@ -111,7 +117,7 @@ def createTaxLettersFromCSV(hostPath, newPath, donorFirstName, donorLastName, do
                 paragraph.text = paragraph.text.replace('{Amount}', donorAmount)
                 paragraph.style = newTaxLetter.styles['Normal']
             if '{Date}' in paragraph.text:
-                paragraph.text = paragraph.text.replace('{Date}', formattedDate)
+                paragraph.text = paragraph.text.replace('{Date}', useDate)
                 paragraph.style = newTaxLetter.styles['Normal']
 
             #Save the new document with a unique name for each donor
@@ -124,7 +130,7 @@ def createTaxLettersFromCSV(hostPath, newPath, donorFirstName, donorLastName, do
         os.chdir(hostPath)
 
 #create Envelopes for each donor in the CSV file
-def createEnvelopesFromCSV(hostPath, newPath, donorFirstName, donorLastName, donorAddress, donorCityState, donorZip):
+def createEnvelopesFromCSV(hostPath, newPath, useDate, donorFirstName, donorLastName, donorAddress, donorCityState, donorZip):
 
     #Move to the directory where the template is located
     #os.chdir(hostPath)
